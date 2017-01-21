@@ -15,6 +15,20 @@ class WaveFn
         return y;
     }
 
+    public bool invalidAngle(float x, float validAngle, Quaternion currentRotation)
+    {
+        float y = f(x);
+
+        if (!slidingDown(x))
+        {
+            Quaternion targetRotation = perfectRotation(x);
+            float angle = Quaternion.Angle(currentRotation, targetRotation);
+            return angle > validAngle;
+        }
+
+        return false;
+    }
+
     public bool slidingDown(float x)
     {
         float x1 = x - 0.1f;
