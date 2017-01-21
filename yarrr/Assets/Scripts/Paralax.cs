@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Paralax : MonoBehaviour
 {
-	public float speed = -2.0f;
 	public GameObject[] objects;
 
 	private float singleItemWidth = 0;
@@ -13,12 +12,11 @@ public class Paralax : MonoBehaviour
 	{
 		for (int i = 0; i < objects.Length; ++i)
 		{
-			objects[i].GetComponent<Rigidbody2D>().velocity = new Vector3(speed, 0, 0);
+			objects[i].GetComponent<Rigidbody2D>().velocity = new Vector3(objects[i].GetComponent<ParalaxItem>().speed, 0, 0);
 		}
 
 		// all objects need to have the same size
 		singleItemWidth = objects[0].GetComponent<BoxCollider2D>().size.x;
-		Debug.Log (singleItemWidth);
 	}
 
 	public void onParalaxItemNeedsUpdate(GameObject item)
@@ -30,8 +28,10 @@ public class Paralax : MonoBehaviour
 				Vector3 oldPosition = objects[i].transform.position;
 				Vector3 newPosition = oldPosition;
 				newPosition.x += objects.Length * singleItemWidth;
-				newPosition.y = Random.Range (-3, 3);
-
+				if (objects [i].CompareTag("Cloud")) {
+					newPosition.y = Random.Range (-3, 3);
+				}
+					
 				objects[i].transform.position = newPosition;
 				break;
 			}

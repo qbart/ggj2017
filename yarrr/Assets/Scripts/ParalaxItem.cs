@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ParalaxItem : MonoBehaviour
 {
+	public float speed = -2.0f;
+
 	void Start()
 	{
 	}
