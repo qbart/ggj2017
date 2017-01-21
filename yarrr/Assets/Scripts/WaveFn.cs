@@ -15,10 +15,10 @@ class WaveFn
         return y;
     }
 
-    public bool hitWave(float x, Transform transform)
+    public bool hitWave(float x, Transform transform, float offsetY)
     {
         float y = f(x + transform.position.x);
-        bool belowWater = transform.position.y < y;
+        bool belowWater = transform.position.y < (y - offsetY);
         return belowWater;
     }
 

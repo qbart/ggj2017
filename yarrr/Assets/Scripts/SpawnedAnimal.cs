@@ -11,9 +11,11 @@ public class SpawnedAnimal : MonoBehaviour
     WaveFn fn;
     bool attachedToWave;
     Vector2 attachedOrigin;
+    float howMuchBelowWater;
 
     void Start()
     {
+        howMuchBelowWater = Random.Range(0, 1.5f);
         fn = new WaveFn();
         targetScale = transform.localScale.x * 2;
 
@@ -29,7 +31,7 @@ public class SpawnedAnimal : MonoBehaviour
     {
         if (!attachedToWave)
         {
-            if (fn.hitWave(wave.getCurrentX(), transform))
+            if (fn.hitWave(wave.getCurrentX(), transform, howMuchBelowWater))
             {
                 attachedToWave = true;
                 body.bodyType = RigidbodyType2D.Kinematic;
