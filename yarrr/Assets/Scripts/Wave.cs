@@ -191,7 +191,7 @@ public class Wave : MonoBehaviour
             float y1 = fn.f(x1 + curX) - 1;
             float y2 = fn.f(x2 + curX) - 1;
 
-            float z = 0;
+            float z = -0.01f;
             vertices[offset + 0] = new Vector3(x1, y1 - 10, z);
             vertices[offset + 1] = new Vector3(x1, y1, z);
             vertices[offset + 2] = new Vector3(x2, y2 - 10, z);
