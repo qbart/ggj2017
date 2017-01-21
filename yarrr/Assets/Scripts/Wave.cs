@@ -174,10 +174,11 @@ public class Wave : MonoBehaviour
             //uvs[offset + 2] = new Vector2(u2, 0);
             //uvs[offset + 3] = new Vector2(u2, v2);
 
-            vertices[offset + 0] = new Vector3(x1, y1 - 10, 0);
-            vertices[offset + 1] = new Vector3(x1, y1, 0);
-            vertices[offset + 2] = new Vector3(x2, y2 - 10, 0);
-            vertices[offset + 3] = new Vector3(x2, y2, 0);
+            float z = -1;
+            vertices[offset + 0] = new Vector3(x1, y1 - 10, z);
+            vertices[offset + 1] = new Vector3(x1, y1, z);
+            vertices[offset + 2] = new Vector3(x2, y2 - 10, z);
+            vertices[offset + 3] = new Vector3(x2, y2, z);
 
             float scale = 8.0f;
             float u1 = (x1 + curX * floatingWaveSpeed) / scale;
