@@ -30,6 +30,8 @@ public class Paralax : MonoBehaviour
 				Vector3 oldPosition = objects[i].transform.position;
 				Vector3 newPosition = oldPosition;
 				newPosition.x += objects.Length * singleItemWidth;
+				newPosition.y = Random.Range (-3, 3);
+
 				objects[i].transform.position = newPosition;
 				break;
 			}

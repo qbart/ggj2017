@@ -15,6 +15,7 @@ public class harpoon : MonoBehaviour {
 		mousePos.y = objectPos.y - mousePos.y;
 
 		float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
+		angle = Mathf.Clamp (angle, -45, 45);
 		transform.rotation = Quaternion.Euler (new Vector3 (0, 0, angle)); 
 
 		if (Input.GetMouseButtonDown (0)) {
