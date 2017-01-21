@@ -63,17 +63,23 @@ class WaveFn
 public class PlayerBoat : MonoBehaviour
 {
     CircleCollider2D boatCollider;
-    float speed = 5;
+    float speed = 5;    
     float rotationForce = 30.0f;
-    float rotationRestoreForce = 100.0f;
+    float adjustRotationConstantForce = 40.0f;
+    float adjustRotationSlidingForce = 100.0f;
     WaveFn fn;
     float curX;
+    bool prevSlidingDown, slidingDown;
+    int bounceSteps;
 
 	void Start()
     {
         boatCollider = GetComponent<CircleCollider2D>();
         fn = new WaveFn();
         curX = transform.position.x;
+        prevSlidingDown = false;
+        slidingDown = false;
+        bounceSteps = 0;
     }
 	
 	void Update()
@@ -87,17 +93,36 @@ public class PlayerBoat : MonoBehaviour
             transform.Rotate(Vector3.forward, rotationForce * Time.deltaTime);
         }
 
-        if (fn.slidingDown(curX))
+        prevSlidingDown = slidingDown;
+        slidingDown = fn.slidingDown(curX);
+        if (!prevSlidingDown && slidingDown)
+            bounceSteps = 3;
+
+        if (bounceSteps > 0)
         {
-            Quaternion perfectRotation = fn.perfectRotation(curX);
+            Quaternion targetRotation = fn.perfectRotation(curX);
+            Quaternion currentRotation = transform.rotation;
+            Vector3 targetAngles = targetRotation.eulerAngles;
+            
+            Quaternion quat = targetRotation;
+
             Quaternion rotation = Quaternion.RotateTowards(
                 transform.rotation,
-                perfectRotation,
-                rotationRestoreForce * Time.deltaTime
+                targetRotation,
+                adjustRotationSlidingForce * Time.deltaTime
             );
-
             transform.localRotation = rotation;
         }
+        //else
+        //{
+        //    Quaternion rotation = Quaternion.RotateTowards(
+        //        transform.rotation,
+        //        perfectRotation,
+        //        adjustRotationConstantForce * Time.deltaTime
+        //    );
+        //    //transform.rotation.eulerAngles;
+        //    transform.localRotation = rotation;
+        //}
 
         curX += speed * Time.deltaTime;
     }
