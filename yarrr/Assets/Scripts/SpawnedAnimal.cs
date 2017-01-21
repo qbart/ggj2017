@@ -5,6 +5,8 @@ using UnityEngine;
 public class SpawnedAnimal : MonoBehaviour
 {
     public Wave wave;
+	public AudioClip[] sndSplashes;
+	private AudioSource audio;
 
     Rigidbody2D body;
     float targetScale = 0;
@@ -15,6 +17,7 @@ public class SpawnedAnimal : MonoBehaviour
 
     void Start()
     {
+		audio = GetComponent<AudioSource>();
         howMuchBelowWater = Random.Range(0, 1.5f);
         fn = new WaveFn();
         targetScale = transform.localScale.x * 2;
@@ -33,6 +36,7 @@ public class SpawnedAnimal : MonoBehaviour
         {
             if (fn.hitWave(wave.getCurrentX(), transform, howMuchBelowWater))
             {
+				audio.PlayOneShot (sndSplashes[Random.Range(0,3)]);
                 attachedToWave = true;
                 body.bodyType = RigidbodyType2D.Kinematic;
                 body.velocity = Vector2.zero;
