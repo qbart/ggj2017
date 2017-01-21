@@ -82,6 +82,8 @@ class WaveFn
 
 public class Wave : MonoBehaviour
 {
+    public SortingLayer sortingLayer;
+
     Mesh mesh;
     WaveFn fn;
     float curX;
@@ -89,7 +91,7 @@ public class Wave : MonoBehaviour
     float floatingWaveSpeed = 1.5f;
     float floatingWaveFoamSpeed = 1.6f;
 
-    const int CHUNKS_COUNT = 100;
+    const int CHUNKS_COUNT = 80;
     const int VERTEX_COUNT = 4 * CHUNKS_COUNT;
     const int BATCHED_VERTEX_COUNT = 2 * VERTEX_COUNT;
     const int TRIS_COUNT = 6 * CHUNKS_COUNT;
@@ -189,7 +191,7 @@ public class Wave : MonoBehaviour
             float y1 = fn.f(x1 + curX) - 1;
             float y2 = fn.f(x2 + curX) - 1;
 
-            float z = -1;
+            float z = 0;
             vertices[offset + 0] = new Vector3(x1, y1 - 10, z);
             vertices[offset + 1] = new Vector3(x1, y1, z);
             vertices[offset + 2] = new Vector3(x2, y2 - 10, z);

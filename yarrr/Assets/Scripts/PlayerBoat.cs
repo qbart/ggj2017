@@ -39,7 +39,7 @@ public class PlayerBoat : MonoBehaviour
     void Update()
     {
         float curX = wave.getCurrentX();
-        transform.position = new Vector2(transform.position.x, fn.f(curX));
+        transform.position = new Vector3(transform.position.x, fn.f(curX), 1.0f);
 
         if (Input.GetAxis("Horizontal") < 0)
         {
