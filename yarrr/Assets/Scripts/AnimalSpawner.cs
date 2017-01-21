@@ -14,8 +14,8 @@ public class AnimalSpawner : MonoBehaviour
     public void spawnAnimal(bool fromBack)
     {
         Transform spawnPoint = fromBack ? backSpawnPoint : frontSpawnPoint;
-
-        GameObject animal = Instantiate(animals[0]) as GameObject;
+		int animalIndex = Random.Range (0, 3);
+		GameObject animal = Instantiate(animals[animalIndex]) as GameObject;
         Rigidbody2D body = animal.GetComponent<Rigidbody2D>();
         body.transform.position = spawnPoint.position;
         Vector3 impulse = spawnPoint.rotation * Vector3.one;
