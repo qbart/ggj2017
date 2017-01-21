@@ -7,8 +7,18 @@ class WaveFn
 {
     public float f(float x)
     {
-        float y = Mathf.Sin(0.5f * x);
+        float y = 2 * Mathf.Sin(0.25f * x);
         return y;
+    }
+
+    public bool slidingDown(float x)
+    {
+        float x1 = x - 0.05f;
+        float x2 = x + 0.05f;
+        float y1 = f(x1);
+        float y2 = f(x2);
+
+        return y2 < y1;
     }
 
     public Quaternion perfectRotation(float x)
@@ -25,18 +35,42 @@ class WaveFn
 
         return Quaternion.FromToRotation(Vector3.up, rotatedDirection);
     }
+
+    public void draw(float x, float offset)
+    {
+        float step = 0.01f;
+        float startX = -15;
+        float stopX = +15;
+
+        float drawX1 = startX;
+        float drawX2 = startX + step;
+        while (drawX1 < stopX)
+        {
+            drawX1 += step;
+            drawX2 += step;
+            float y1 = f(drawX1 + x);
+            float y2 = f(drawX2 + x);
+
+            Debug.DrawLine(
+                new Vector2(drawX1, y1 - offset),
+                new Vector2(drawX2, y2 - offset),
+                Color.red
+            );
+        }
+    }
 }
 
 public class PlayerBoat : MonoBehaviour
 {
-    private Rigidbody2D body;
-    private CircleCollider2D boatCollider;
+    CircleCollider2D boatCollider;
+    float speed = 5;
+    float rotationForce = 30.0f;
+    float rotationRestoreForce = 100.0f;
     WaveFn fn;
     float curX;
 
 	void Start()
     {
-        body = GetComponent<Rigidbody2D>();
         boatCollider = GetComponent<CircleCollider2D>();
         fn = new WaveFn();
         curX = transform.position.x;
@@ -44,32 +78,27 @@ public class PlayerBoat : MonoBehaviour
 	
 	void Update()
     {
-        float step = 0.01f;
-        float x1 = curX;
-        float startX = -15;
-        float stopX = +15;
-        x1 = startX;
-        float x2 = x1 + step;
-
-        float drawX1 = startX;
-        float drawX2 = startX + step; 
-        while (drawX1 < stopX)
-        {
-            drawX1 += step;
-            drawX2 += step;
-            float y1 = fn.f(drawX1 + curX);
-            float y2 = fn.f(drawX2 + curX);
-
-            Debug.DrawLine(
-                new Vector2(drawX1, y1 - boatCollider.radius),
-                new Vector2(drawX2, y2 - boatCollider.radius),
-                Color.red
-            );
-        }
+        fn.draw(curX, boatCollider.radius);
 
         transform.position = new Vector2(transform.position.x, fn.f(curX));
-        transform.localRotation = fn.perfectRotation(curX);
 
-        curX += 0.1f;
+        if (Input.GetAxis("Horizontal") < 0)
+        {
+            transform.Rotate(Vector3.forward, rotationForce * Time.deltaTime);
+        }
+
+        if (fn.slidingDown(curX))
+        {
+            Quaternion perfectRotation = fn.perfectRotation(curX);
+            Quaternion rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                perfectRotation,
+                rotationRestoreForce * Time.deltaTime
+            );
+
+            transform.localRotation = rotation;
+        }
+
+        curX += speed * Time.deltaTime;
     }
 }
