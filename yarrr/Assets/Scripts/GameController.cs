@@ -7,14 +7,15 @@ public class GameController : MonoBehaviour {
 
 	public Text scoreCounterText;
 	public Text animalCounterText;
-	private int animalCount;
-	private int pointCount;
+	public int animalCount;
+	public int pointCount;
+
 	int interval = 1; 
 	float nextTime = 0;
 
 	// Use this for initialization
 	void Start () {
-		animalCount = 8;
+		animalCount = 3;
 		pointCount = 0;
 	}
 	
