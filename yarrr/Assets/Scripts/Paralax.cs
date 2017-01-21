@@ -29,7 +29,7 @@ public class Paralax : MonoBehaviour
 				Vector3 newPosition = oldPosition;
 				newPosition.x += objects.Length * singleItemWidth;
 				if (objects [i].CompareTag("Cloud")) {
-					newPosition.y = Random.Range (-3, 3);
+					newPosition.y = Random.Range (-1, 1);
 				}
 					
 				objects[i].transform.position = newPosition;
