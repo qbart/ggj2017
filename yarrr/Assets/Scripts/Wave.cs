@@ -3,87 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-class WaveFn
-{
-    public const float STEP = 0.01f;
-    public const float START_X = -15;
-    public const float STOP_X = +15;
-
-    public float f(float x)
-    {
-        float y = 2 * Mathf.Sin(0.25f * x);
-        return y;
-    }
-
-    public bool invalidAngle(float x, float validAngle, Quaternion currentRotation)
-    {
-        float y = f(x);
-
-        if (!slidingDown(x))
-        {
-            Quaternion targetRotation = perfectRotation(x);
-            float angle = Quaternion.Angle(currentRotation, targetRotation);
-            return angle > validAngle;
-        }
-
-        return false;
-    }
-
-    public bool slidingDown(float x)
-    {
-        float x1 = x - 0.1f;
-        float x2 = x + 0.1f;
-        float y1 = f(x1);
-        float y2 = f(x2);
-        bool sliding = y2 < y1;
-        float epsilon = 0.05f;
-        bool allowSlope = Mathf.Abs(y1 - y2) >= epsilon;
-        return sliding && allowSlope;
-    }
-
-    public Quaternion perfectRotation(float x, float extraRotationAngle = 0)
-    {
-        float x1 = x - 0.05f;
-        float x2 = x + 0.05f;
-        float y1 = f(x1);
-        float y2 = f(x2);
-
-        Vector2 waveChunk1 = new Vector2(x1, y1);
-        Vector2 waveChunk2 = new Vector2(x2, y2);
-        Vector2 direction = (waveChunk2 - waveChunk1).normalized;
-        Vector2 rotatedDirection = Quaternion.Euler(0, 0, 90) * direction;
-        if (extraRotationAngle != 0)
-        {
-            rotatedDirection = Quaternion.Euler(0, 0, extraRotationAngle) * rotatedDirection;
-        }
-
-        return Quaternion.FromToRotation(Vector3.up, rotatedDirection);
-    }
-
-    public void draw(float x, float offset)
-    {
-        float drawX1 = START_X;
-        float drawX2 = START_X + STEP;
-        while (drawX1 < STOP_X)
-        {
-            drawX1 += STEP;
-            drawX2 += STEP;
-            float y1 = f(drawX1 + x);
-            float y2 = f(drawX2 + x);
-
-            Debug.DrawLine(
-                new Vector2(drawX1, y1 - offset),
-                new Vector2(drawX2, y2 - offset),
-                slidingDown(drawX1 + x) ? Color.yellow : Color.red
-            );
-        }
-    }
-}
-
 public class Wave : MonoBehaviour
 {
-    public SortingLayer sortingLayer;
-
     Mesh mesh;
     WaveFn fn;
     float curX;
@@ -178,7 +99,7 @@ public class Wave : MonoBehaviour
 	void Update()
     {
         float step = WaveFn.STEP * 50;
-        fn.draw(curX, 1);
+        fn.draw(curX);
 
         float x1 = WaveFn.START_X;
         float x2 = WaveFn.START_X + step;
@@ -188,8 +109,8 @@ public class Wave : MonoBehaviour
             int offset = 4 * currentChunk;
             int foamOffset = offset + VERTEX_COUNT;
 
-            float y1 = fn.f(x1 + curX) - 1;
-            float y2 = fn.f(x2 + curX) - 1;
+            float y1 = fn.f(x1 + curX);
+            float y2 = fn.f(x2 + curX);
 
             float z = -0.01f;
             vertices[offset + 0] = new Vector3(x1, y1 - 10, z);

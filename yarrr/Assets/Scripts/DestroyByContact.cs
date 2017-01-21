@@ -6,6 +6,7 @@ public class DestroyByContact : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Destroy(collision.gameObject);
+        if (collision.CompareTag("Animal"))
+            Destroy(collision.gameObject);
     }
 }
