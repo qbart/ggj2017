@@ -73,26 +73,27 @@ public class Wave : MonoBehaviour
     float curX;
     float speed = 5;
     float floatingWaveSpeed = 1.5f;
+    float floatingWaveFoamSpeed = 1.6f;
 
-    const int CHUNKS_COUNT = 3000;
+    const int CHUNKS_COUNT = 100;
     const int VERTEX_COUNT = 4 * CHUNKS_COUNT;
+    const int BATCHED_VERTEX_COUNT = 2 * VERTEX_COUNT;
     const int TRIS_COUNT = 6 * CHUNKS_COUNT;
-    const int UVS_COUNT = VERTEX_COUNT;
+    const int UVS_COUNT = BATCHED_VERTEX_COUNT;
 
     Vector3[] vertices;
-    int[] indices;
+    int[] indices, indicesFoam;
     Vector2[] uvs;
 
     void Start()
     {
-        Debug.Log("Wave started");
-
         fn = new WaveFn();
         mesh = new Mesh();
         mesh.subMeshCount = 2;
 
-        vertices = new Vector3[VERTEX_COUNT];
+        vertices = new Vector3[BATCHED_VERTEX_COUNT];
         indices = new int[TRIS_COUNT];
+        indicesFoam = new int[TRIS_COUNT];
         uvs = new Vector2[UVS_COUNT];
 
         float x1 = WaveFn.START_X;
@@ -101,13 +102,19 @@ public class Wave : MonoBehaviour
         while (currentChunk < CHUNKS_COUNT)
         {
             int offset = 4 * currentChunk;
+            int foamOffset = offset + VERTEX_COUNT;
 
             float y1 = fn.f(x1 + curX) - 1;
             float y2 = fn.f(x2 + curX) - 1;
-            vertices[offset + 0] = new Vector3(x1, 0, 0);
-            vertices[offset + 1] = new Vector3(x1, y1, 0);
-            vertices[offset + 2] = new Vector3(x2, 0, 0);
-            vertices[offset + 3] = new Vector3(x2, y2, 0);
+            vertices[offset + 0] = new Vector3(0, 0, 0);
+            vertices[offset + 1] = new Vector3(0, 0, 0);
+            vertices[offset + 2] = new Vector3(0, 0, 0);
+            vertices[offset + 3] = new Vector3(0, 0, 0);
+
+            vertices[foamOffset + 0] = new Vector3(0, 0, 0);
+            vertices[foamOffset + 1] = new Vector3(0, 0, 0);
+            vertices[foamOffset + 2] = new Vector3(0, 0, 0);
+            vertices[foamOffset + 3] = new Vector3(0, 0, 0);
 
             uvs[offset + 0] = new Vector2(0, 0);
             uvs[offset + 1] = new Vector2(0, 0.1f);
@@ -123,6 +130,7 @@ public class Wave : MonoBehaviour
         {
             int offset = 6 * i;
             int verOffset = 4 * i;
+            int verFoamOffset = verOffset + VERTEX_COUNT;
 
             indices[offset + 0] = 0 + verOffset;
             indices[offset + 1] = 1 + verOffset;
@@ -131,13 +139,20 @@ public class Wave : MonoBehaviour
             indices[offset + 3] = 2 + verOffset;
             indices[offset + 4] = 1 + verOffset;
             indices[offset + 5] = 3 + verOffset;
+
+            indicesFoam[offset + 0] = 0 + verFoamOffset;
+            indicesFoam[offset + 1] = 1 + verFoamOffset;
+            indicesFoam[offset + 2] = 2 + verFoamOffset;
+
+            indicesFoam[offset + 3] = 2 + verFoamOffset;
+            indicesFoam[offset + 4] = 1 + verFoamOffset;
+            indicesFoam[offset + 5] = 3 + verFoamOffset;
         }
         
         mesh.vertices = vertices;
         mesh.SetTriangles(indices, 0);
-        //mesh.SetTriangles(indices, 1);
+        mesh.SetTriangles(indicesFoam, 1);
         mesh.uv = uvs;
-        //mesh.uv2 = uvs;
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
 
@@ -155,30 +170,23 @@ public class Wave : MonoBehaviour
         while (currentChunk < CHUNKS_COUNT)
         {
             int offset = 4 * currentChunk;
+            int foamOffset = offset + VERTEX_COUNT;
 
             float y1 = fn.f(x1 + curX) - 1;
             float y2 = fn.f(x2 + curX) - 1;
-            //vertices[offset + 0] = new Vector3(x1, -5, 0);
-            //vertices[offset + 1] = new Vector3(x1, y1, 0);
-            //vertices[offset + 2] = new Vector3(x2, -5, 0);
-            //vertices[offset + 3] = new Vector3(x2, y2, 0);
-
-            //float scale = 5f;
-            //float u1 = (x1 + curX) / scale;
-            //float u2 = (x2 + curX) / scale;
-            //float v1 = (y1 + 5) / (scale + 5);
-            //float v2 = (y2 + 5) / (scale + 5);
-
-            //uvs[offset + 0] = new Vector2(u1, 0);
-            //uvs[offset + 1] = new Vector2(u1, v1);
-            //uvs[offset + 2] = new Vector2(u2, 0);
-            //uvs[offset + 3] = new Vector2(u2, v2);
 
             float z = -1;
             vertices[offset + 0] = new Vector3(x1, y1 - 10, z);
             vertices[offset + 1] = new Vector3(x1, y1, z);
             vertices[offset + 2] = new Vector3(x2, y2 - 10, z);
             vertices[offset + 3] = new Vector3(x2, y2, z);
+
+            float foamSize = 0.5f;
+            float foamSizeOffset = -0.08f;
+            vertices[foamOffset + 0] = new Vector3(x1, y1 + foamSizeOffset, z);
+            vertices[foamOffset + 1] = new Vector3(x1, y1 + foamSizeOffset + foamSize, z);
+            vertices[foamOffset + 2] = new Vector3(x2, y2 + foamSizeOffset, z);
+            vertices[foamOffset + 3] = new Vector3(x2, y2 + foamSizeOffset + foamSize, z);
 
             float scale = 8.0f;
             float u1 = (x1 + curX * floatingWaveSpeed) / scale;
@@ -190,6 +198,14 @@ public class Wave : MonoBehaviour
             uvs[offset + 1] = new Vector2(u1, 1);
             uvs[offset + 2] = new Vector2(u2, 0);
             uvs[offset + 3] = new Vector2(u2, 1);
+
+            u1 = (x1 + curX * floatingWaveFoamSpeed) / scale;
+            u2 = (x2 + curX * floatingWaveFoamSpeed) / scale;
+
+            uvs[foamOffset + 0] = new Vector2(u1, 0);
+            uvs[foamOffset + 1] = new Vector2(u1, 1);
+            uvs[foamOffset + 2] = new Vector2(u2, 0);
+            uvs[foamOffset + 3] = new Vector2(u2, 1);
 
             currentChunk++;
             x1 += step;
@@ -207,8 +223,8 @@ public class Wave : MonoBehaviour
         return curX;
     }
 
-    //void OnDrawGizmos()
-    //{
-    //    Gizmos.DrawWireMesh(mesh);
-    //}
+    void OnDrawGizmos()
+    {
+        Gizmos.DrawWireMesh(mesh);
+    }
 }
