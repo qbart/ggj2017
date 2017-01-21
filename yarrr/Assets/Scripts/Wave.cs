@@ -223,8 +223,8 @@ public class Wave : MonoBehaviour
         return curX;
     }
 
-    void OnDrawGizmos()
-    {
-        Gizmos.DrawWireMesh(mesh);
-    }
+    //void OnDrawGizmos()
+    //{
+    //    Gizmos.DrawWireMesh(mesh);
+    //}
 }
