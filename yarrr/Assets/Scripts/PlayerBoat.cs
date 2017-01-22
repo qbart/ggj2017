@@ -6,6 +6,8 @@ public class PlayerBoat : MonoBehaviour
 {
     public Wave wave;
 
+    public GameController gameController;
+
     private AnimalSpawner spawner;
 
     public Harpoon harpoon;
@@ -106,16 +108,6 @@ public class PlayerBoat : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Animal"))
-        {
-            SpawnedAnimal animal = collision.GetComponent<SpawnedAnimal>();
-            if (animal.isConnected())
-            {
-                Destroy(animal.gameObject);
-                //TODO count points
-                //play rescue
-            }
-        }
         if (collision.CompareTag("Bullet"))
         {
             Plunger plunger = collision.GetComponent<Plunger>();
@@ -123,6 +115,7 @@ public class PlayerBoat : MonoBehaviour
             {
                 harpoon.detachPlunger();
                 Destroy(collision.gameObject);
+                gameController.addAnimals(1);
             }
         }
     }
