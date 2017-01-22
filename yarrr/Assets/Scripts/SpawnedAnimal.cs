@@ -33,7 +33,7 @@ public class SpawnedAnimal : MonoBehaviour
         targetScale = transform.localScale.x * 2;
 
         Vector3 scale = transform.localScale;
-        scale.x = scale.y = 0.75f;
+        scale.x = scale.y = 1.2f;
         transform.localScale = scale;
 
         attachedToWave = false;
