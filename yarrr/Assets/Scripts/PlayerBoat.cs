@@ -16,7 +16,6 @@ public class PlayerBoat : MonoBehaviour
 	public AudioClip sndCatched;
 	public AudioClip sndNotCatched;
 
-    CircleCollider2D boatCollider;
     float validAngle = 10;
     float rotationForce = 30.0f;
     float adjustRotationSlidingForce = 100.0f;
@@ -36,7 +35,6 @@ public class PlayerBoat : MonoBehaviour
 
     void Start()
     {
-        boatCollider = GetComponent<CircleCollider2D>();
 		audio = GetComponent<AudioSource>();
         fn = new WaveFn();
         prevSlidingDown = false;

@@ -41,8 +41,6 @@ public class Wave : MonoBehaviour
             int offset = 4 * currentChunk;
             int foamOffset = offset + VERTEX_COUNT;
 
-            float y1 = fn.f(x1 + curX) - 1;
-            float y2 = fn.f(x2 + curX) - 1;
             vertices[offset + 0] = new Vector3(0, 0, 0);
             vertices[offset + 1] = new Vector3(0, 0, 0);
             vertices[offset + 2] = new Vector3(0, 0, 0);
@@ -128,8 +126,6 @@ public class Wave : MonoBehaviour
             float scale = 8.0f;
             float u1 = (x1 + curX * floatingWaveSpeed) / scale;
             float u2 = (x2 + curX * floatingWaveSpeed) / scale;
-            float v1 = y1 / scale;
-            float v2 = y2 / scale;
 
             uvs[offset + 0] = new Vector2(u1, 0);
             uvs[offset + 1] = new Vector2(u1, 1);

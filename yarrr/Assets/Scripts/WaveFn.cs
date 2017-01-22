@@ -24,8 +24,6 @@ class WaveFn
 
     public bool invalidAngle(float x, float validAngle, Quaternion currentRotation)
     {
-        float y = f(x);
-
         if (!slidingDown(x))
         {
             Quaternion targetRotation = perfectRotation(x);
