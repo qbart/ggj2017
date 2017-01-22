@@ -9,7 +9,8 @@ public class GameController : MonoBehaviour
 	public Text scoreCounterText;
 	public Text animalCounterText;
 	private int animalCount;
-	private int pointCount;
+    private int animalsInTheWorld;
+    private int pointCount;
 
 	int interval = 1; 
 	float nextTime = 0;
@@ -17,7 +18,8 @@ public class GameController : MonoBehaviour
 	void Start()
     {
 		animalCount = 10;
-		pointCount = 0;
+        animalsInTheWorld = animalCount;
+        pointCount = 0;
 	}
 	
 	void Update () {
@@ -28,13 +30,18 @@ public class GameController : MonoBehaviour
 			nextTime += interval;
             updateCounters();
         }
-
 	}
 
     public void addAnimals(int value)
     {
         this.animalCount += value;
-        animalCounterText.text = "" + animalCount;
+        updateAnimalsQuantityText();
+    }
+
+    public void animalKilled(int count)
+    {
+        animalsInTheWorld -= count;
+        updateAnimalsQuantityText();
     }
 
     public int getAnimalsCount()
@@ -51,4 +58,10 @@ public class GameController : MonoBehaviour
     {
 		pointCount += 10 * animalCount;
 	}
+
+    void updateAnimalsQuantityText()
+    {
+        animalCounterText.text = animalCount + " / " + animalsInTheWorld;
+
+    }
 }
