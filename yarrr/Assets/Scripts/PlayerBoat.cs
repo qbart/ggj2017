@@ -58,7 +58,7 @@ public class PlayerBoat : MonoBehaviour
         if (fn.invalidAngle(curX, validAngle, transform.rotation))
         {
 #if UNITY_EDITOR
-            GetComponentInChildren<SpriteRenderer>().color = Color.red;
+            //GetComponentInChildren<SpriteRenderer>().color = Color.red;
 #endif
             if (nextFailureIn <= 0)
             {
@@ -70,7 +70,7 @@ public class PlayerBoat : MonoBehaviour
         else
         {
 #if UNITY_EDITOR
-            GetComponentInChildren<SpriteRenderer>().color = Color.white;
+            //GetComponentInChildren<SpriteRenderer>().color = Color.white;
 #endif
         }
 
