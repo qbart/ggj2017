@@ -11,7 +11,7 @@ public class AnimalSpawner : MonoBehaviour
 
     public GameObject[] animals;
 
-    private float spawnForce = 4;
+    private float spawnForce = 8;
 
     public void spawnAnimal(bool fromBack)
     {
