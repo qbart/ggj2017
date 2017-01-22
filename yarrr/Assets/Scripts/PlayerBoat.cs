@@ -12,6 +12,10 @@ public class PlayerBoat : MonoBehaviour
 
     public Harpoon harpoon;
 
+	AudioSource audio;
+	public AudioClip sndCatched;
+	public AudioClip sndNotCatched;
+
     CircleCollider2D boatCollider;
     float validAngle = 10;
     float rotationForce = 30.0f;
@@ -33,6 +37,7 @@ public class PlayerBoat : MonoBehaviour
     void Start()
     {
         boatCollider = GetComponent<CircleCollider2D>();
+		audio = GetComponent<AudioSource>();
         fn = new WaveFn();
         prevSlidingDown = false;
         slidingDown = false;
@@ -122,11 +127,12 @@ public class PlayerBoat : MonoBehaviour
                 if (hasAnimalAttached)
                 {
                     gameController.addAnimals(1);
-                    //TODO: snd whistle
+					audio.PlayOneShot(sndCatched);
+
                 }
                 else
                 {
-                    //TODO: snd missed shot
+					audio.PlayOneShot(sndNotCatched);
                 }
             }
         }
