@@ -16,8 +16,8 @@ public class PlayerBoat : MonoBehaviour
 	public AudioClip sndCatched;
 	public AudioClip sndNotCatched;
 
-    float validAngle = 10;
-    float rotationForce = 30.0f;
+    float validAngle = 15;
+    float rotationForce = -90.0f;
     float adjustRotationSlidingForce = 100.0f;
     float maxAdjustRotationSlidingForce = 100.0f;
     float maxBounceAngle = 20.0f;
@@ -48,9 +48,11 @@ public class PlayerBoat : MonoBehaviour
         float curX = wave.getCurrentX();
         transform.position = new Vector3(transform.position.x, fn.f(curX), 1.0f);
 
-        if (Input.GetAxis("Horizontal") < 0)
+        float axis = Input.GetAxis("Horizontal");
+
+        if (axis != 0)
         {
-            transform.Rotate(Vector3.forward, rotationForce * Time.deltaTime);
+            transform.Rotate(Vector3.forward, rotationForce * axis * Time.deltaTime);
         }
 
         if (fn.invalidAngle(curX, validAngle, transform.rotation))
