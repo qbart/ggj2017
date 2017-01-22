@@ -7,6 +7,7 @@ public class SpawnedAnimal : MonoBehaviour
     public Wave wave;
 	public AudioClip[] sndSplashes;
 	private AudioSource audio;
+	private Animator animator;
 
     Rigidbody2D body;
     float targetScale = 0;
@@ -17,6 +18,7 @@ public class SpawnedAnimal : MonoBehaviour
 
     void Start()
     {
+		animator = GetComponentInChildren<Animator>();
 		audio = GetComponent<AudioSource>();
         howMuchBelowWater = Random.Range(0, 1.5f);
         fn = new WaveFn();
@@ -36,6 +38,7 @@ public class SpawnedAnimal : MonoBehaviour
         {
             if (fn.hitWave(wave.getCurrentX(), transform, howMuchBelowWater))
             {
+				animator.SetTrigger("swim");
 				audio.PlayOneShot (sndSplashes[Random.Range(0,3)]);
                 attachedToWave = true;
                 body.bodyType = RigidbodyType2D.Kinematic;
