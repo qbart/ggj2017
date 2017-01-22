@@ -6,7 +6,9 @@ public class Harpoon : MonoBehaviour
 {
     const float MIN_PLUNGER_ALIVE_TIME = 1.0f;
 
+
     public LayerMask animalLayer;
+    public Pirate pirate;
     public Transform plungerSpawnPoint;
     public GameObject plunger;
     public SpringJoint2D ropeJoint;
@@ -18,6 +20,8 @@ public class Harpoon : MonoBehaviour
     GameObject activeBullet = null;
     LineRenderer lineRenderer;
     bool withdrawRope;
+    bool playReelAnim;
+    int framePirateReel;
 
     void Start()
     {
@@ -37,7 +41,6 @@ public class Harpoon : MonoBehaviour
             }
             else
             {
-
                 withdrawRope = false;
             }
         }
@@ -62,11 +65,27 @@ public class Harpoon : MonoBehaviour
         float angle = Mathf.Atan2(position.y, position.x) * Mathf.Rad2Deg;
         angle = Mathf.Clamp(angle, -45, 45);
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
-        
+
+        if (framePirateReel < 12 && playReelAnim)
+        {
+            pirate.setFrame(pirate.spriteReel[framePirateReel / 2]);
+            framePirateReel++;
+        }
+        else
+        {
+            playReelAnim = false;
+
+            if (angle <= 0)
+                pirate.setFrame(pirate.spriteDown[clampi((int)Mathf.Abs(angle / 7.5f), 0, 5)]);
+            else
+                pirate.setFrame(pirate.spriteUp[clampi((int)(angle / 7.5f), 0, 5)]);
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             if (activeBullet == null)
             {
+                playReelAnim = false;
                 // spawn plunger
                 plungerMinimumAliveTimeBeforeDetaching = MIN_PLUNGER_ALIVE_TIME;
                 withdrawRope = false;
@@ -82,10 +101,12 @@ public class Harpoon : MonoBehaviour
                 body.AddForce(direction * 150, ForceMode2D.Impulse);
                 activeBullet = bullet;
                 lineRenderer.enabled = true;
+                framePirateReel = 0;
             }
             else
             {
-				audio.PlayOneShot (sndWithdraw);
+                playReelAnim = true;
+                audio.PlayOneShot (sndWithdraw);
                 withdrawRope = true;
             }
         }
@@ -101,5 +122,15 @@ public class Harpoon : MonoBehaviour
 		audio.Stop();
         activeBullet = null;
         lineRenderer.enabled = false;
+    }
+
+    int clampi(int x, int a, int b)
+    {
+        if (x < a)
+            return a;
+        if (x > b)
+            return b;
+
+        return x;
     }
 }
