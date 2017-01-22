@@ -8,6 +8,8 @@ public class PlayerBoat : MonoBehaviour
 
     private AnimalSpawner spawner;
 
+    public Harpoon harpoon;
+
     CircleCollider2D boatCollider;
     float validAngle = 10;
     float rotationForce = 30.0f;
@@ -99,6 +101,29 @@ public class PlayerBoat : MonoBehaviour
                 adjustRotationSlidingForce * Time.deltaTime
             );
             transform.localRotation = rotation;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Animal"))
+        {
+            SpawnedAnimal animal = collision.GetComponent<SpawnedAnimal>();
+            if (animal.isConnected())
+            {
+                Destroy(animal.gameObject);
+                //TODO count points
+                //play rescue
+            }
+        }
+        if (collision.CompareTag("Bullet"))
+        {
+            Plunger plunger = collision.GetComponent<Plunger>();
+            if (plunger.isConnected())
+            {
+                harpoon.detachPlunger();
+                Destroy(collision.gameObject);
+            }
         }
     }
 

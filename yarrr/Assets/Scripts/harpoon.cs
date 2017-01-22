@@ -2,32 +2,83 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class harpoon : MonoBehaviour {
-	// Use this for initialization
+public class Harpoon : MonoBehaviour
+{
 	public LayerMask animalLayer;
+    public Transform plungerSpawnPoint;
+    public GameObject plunger;
+    public SpringJoint2D ropeJoint;
 
-	// Update is called once per frame
-	void Update () {
-		Vector3 mousePos = Input.mousePosition;
+    GameObject activeBullet = null;
+    LineRenderer lineRenderer;
+    bool withdrawRope;
 
-		Vector3 objectPos = Camera.main.WorldToScreenPoint (transform.position);
-		mousePos.x = objectPos.x - mousePos.x;
-		mousePos.y = objectPos.y - mousePos.y;
+    void Start()
+    {
+        lineRenderer = GetComponent<LineRenderer>();
+        activeBullet = null;
+        withdrawRope = false;
+    }
 
-		float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
-		angle = Mathf.Clamp (angle, -45, 45);
-		transform.rotation = Quaternion.Euler (new Vector3 (0, 0, angle)); 
+	void Update()
+    {
+        if (withdrawRope)
+        {
+            if (ropeJoint.distance >= 0.01f)
+            {
+                ropeJoint.distance -= 10 * Time.deltaTime;
+            }
+            else
+            {
 
-		if (Input.GetMouseButtonDown (0)) {
-			Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                withdrawRope = false;
+            }
+        }
 
-			RaycastHit2D hit = Physics2D.Raycast(transform.position, mousePosition, 10, animalLayer);
+        if (activeBullet != null)
+        {
+            lineRenderer.SetPosition(0, ropeJoint.transform.position);
+            lineRenderer.SetPosition(1, activeBullet.transform.position);
+        }
 
-			Debug.DrawRay(transform.position, mousePosition, Color.red);
-			if(hit.collider != null){
-				hit.rigidbody.MovePosition(hit.rigidbody.position * Time.deltaTime);
-			}
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 objectPos = plungerSpawnPoint.position;
+        Vector3 position;
+        position.x = objectPos.x - mousePosition.x;
+        position.y = objectPos.y - mousePosition.y;
 
-		}
+        float angle = Mathf.Atan2(position.y, position.x) * Mathf.Rad2Deg;
+        angle = Mathf.Clamp(angle, -45, 45);
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (activeBullet == null)
+            {
+                withdrawRope = false;
+                Vector3 direction = mousePosition - plungerSpawnPoint.position;
+                direction.Normalize();
+
+                GameObject bullet = Instantiate(plunger, plungerSpawnPoint.position, transform.rotation);
+                Rigidbody2D body = bullet.GetComponent<Rigidbody2D>();
+                ropeJoint.connectedBody = body;
+                ropeJoint.autoConfigureConnectedAnchor = false;
+                ropeJoint.distance = 6;
+                ropeJoint.connectedAnchor = new Vector2(1, 0);
+                body.AddForce(direction * 150, ForceMode2D.Impulse);
+                activeBullet = bullet;
+                lineRenderer.enabled = true;
+            }
+            else
+            {
+                withdrawRope = true;
+            }
+        }
 	}
+
+    public void detachPlunger()
+    {
+        activeBullet = null;
+        lineRenderer.enabled = false;
+    }
 }

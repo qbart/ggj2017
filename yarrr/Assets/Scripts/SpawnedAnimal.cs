@@ -15,11 +15,14 @@ public class SpawnedAnimal : MonoBehaviour
     bool attachedToWave;
     Vector2 attachedOrigin;
     float howMuchBelowWater;
+    bool connected;
 
     void Start()
     {
 		animator = GetComponentInChildren<Animator>();
 		audio = GetComponent<AudioSource>();
+
+        connected = false;
         howMuchBelowWater = Random.Range(0, 1.5f);
         fn = new WaveFn();
         targetScale = transform.localScale.x * 2;
@@ -34,7 +37,7 @@ public class SpawnedAnimal : MonoBehaviour
 
     void Update()
     {
-        if (!attachedToWave)
+        if (!attachedToWave && !connected)
         {
             if (fn.hitWave(wave.getCurrentX(), transform, howMuchBelowWater))
             {
@@ -63,6 +66,25 @@ public class SpawnedAnimal : MonoBehaviour
             Vector3 scale = transform.localScale;
             scale.x = scale.y = scale.x + 0.05f;
             transform.localScale = scale;
+        }
+    }
+
+    public bool isConnected()
+    {
+        return connected;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Bullet"))
+        {
+            Plunger plunger = collision.gameObject.GetComponent<Plunger>();
+            if (!plunger.isConnected())
+            {
+                connected = true;
+                attachedToWave = false;
+                plunger.connectAnimal(gameObject);
+            }
         }
     }
 }
