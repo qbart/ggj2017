@@ -111,11 +111,23 @@ public class PlayerBoat : MonoBehaviour
         if (collision.CompareTag("Bullet"))
         {
             Plunger plunger = collision.GetComponent<Plunger>();
-            if (plunger.isConnected())
+           
+            if (harpoon.canPlungerBeDetached())
             {
                 harpoon.detachPlunger();
                 Destroy(collision.gameObject);
-                gameController.addAnimals(1);
+                SpawnedAnimal animal = plunger.GetComponentInChildren<SpawnedAnimal>();
+                bool hasAnimalAttached = animal != null;
+
+                if (hasAnimalAttached)
+                {
+                    gameController.addAnimals(1);
+                    //TODO: snd whistle
+                }
+                else
+                {
+                    //TODO: snd missed shot
+                }
             }
         }
     }

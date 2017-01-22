@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class Harpoon : MonoBehaviour
 {
-	public LayerMask animalLayer;
+    const float MIN_PLUNGER_ALIVE_TIME = 1.0f;
+
+    public LayerMask animalLayer;
     public Transform plungerSpawnPoint;
     public GameObject plunger;
     public SpringJoint2D ropeJoint;
 
+    float plungerMinimumAliveTimeBeforeDetaching;
     GameObject activeBullet = null;
     LineRenderer lineRenderer;
     bool withdrawRope;
@@ -37,6 +40,8 @@ public class Harpoon : MonoBehaviour
 
         if (activeBullet != null)
         {
+            plungerMinimumAliveTimeBeforeDetaching -= Time.deltaTime;
+
             lineRenderer.SetPosition(0, ropeJoint.transform.position);
             lineRenderer.SetPosition(1, activeBullet.transform.position);
         }
@@ -55,6 +60,8 @@ public class Harpoon : MonoBehaviour
         {
             if (activeBullet == null)
             {
+                // spawn plunger
+                plungerMinimumAliveTimeBeforeDetaching = MIN_PLUNGER_ALIVE_TIME;
                 withdrawRope = false;
                 Vector3 direction = mousePosition - plungerSpawnPoint.position;
                 direction.Normalize();
@@ -75,6 +82,11 @@ public class Harpoon : MonoBehaviour
             }
         }
 	}
+
+    public bool canPlungerBeDetached()
+    {
+        return plungerMinimumAliveTimeBeforeDetaching <= 0;
+    }
 
     public void detachPlunger()
     {
