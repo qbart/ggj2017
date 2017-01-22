@@ -45,7 +45,8 @@ public class GameController : MonoBehaviour
         animalsInTheWorld -= count;
         updateAnimalsQuantityText();
 
-        SceneManager.LoadScene("Game Over");
+        if (animalsInTheWorld <= 0)
+            SceneManager.LoadScene("Game Over");
     }
 
     public int getAnimalsCount()

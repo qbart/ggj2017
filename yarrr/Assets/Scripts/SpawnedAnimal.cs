@@ -95,6 +95,7 @@ public class SpawnedAnimal : MonoBehaviour
                 connected = true;
                 attachedToWave = false;
                 plunger.connectAnimal(gameObject);
+                animator.SetTrigger("idle");
             }
         }
     }
