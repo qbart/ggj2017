@@ -26,7 +26,7 @@ public class Harpoon : MonoBehaviour
         {
             if (ropeJoint.distance >= 0.01f)
             {
-                ropeJoint.distance -= 10 * Time.deltaTime;
+                ropeJoint.distance -= 15 * Time.deltaTime;
             }
             else
             {
