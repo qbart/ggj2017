@@ -79,7 +79,7 @@ public class SpawnedAnimal : MonoBehaviour
         if (collision.CompareTag("Bullet"))
         {
             Plunger plunger = collision.gameObject.GetComponent<Plunger>();
-            if (!plunger.isConnected())
+            if (!plunger.isConnected() && attachedToWave)
             {
                 connected = true;
                 attachedToWave = false;
