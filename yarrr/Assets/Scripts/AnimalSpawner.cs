@@ -10,6 +10,13 @@ public class AnimalSpawner : MonoBehaviour
 	public GameController gc;
 
     public GameObject[] animals;
+	public AudioClip[] animalSounds;
+	AudioSource audio;
+
+	public void Start()
+	{
+		audio = GetComponent<AudioSource>();
+	}
 
     private float spawnForce = 8;
 
@@ -18,8 +25,10 @@ public class AnimalSpawner : MonoBehaviour
 		if (gc.getAnimalsCount() > 0)
         {
             gc.addAnimals(-1);
+
             Transform spawnPoint = fromBack ? backSpawnPoint : frontSpawnPoint;
 			int animalIndex = Random.Range (0, 3);
+			audio.PlayOneShot(animalSounds[animalIndex]);
 			GameObject animal = Instantiate(animals[animalIndex]) as GameObject;
 			animal.GetComponent<SpawnedAnimal>().wave = wave;
 			Rigidbody2D body = animal.GetComponent<Rigidbody2D>();
