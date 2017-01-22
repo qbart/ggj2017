@@ -10,6 +10,9 @@ public class Harpoon : MonoBehaviour
     public Transform plungerSpawnPoint;
     public GameObject plunger;
     public SpringJoint2D ropeJoint;
+	AudioSource audio;
+
+	public AudioClip sndWithdraw;
 
     float plungerMinimumAliveTimeBeforeDetaching;
     GameObject activeBullet = null;
@@ -19,6 +22,7 @@ public class Harpoon : MonoBehaviour
     void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
+		audio = GetComponent<AudioSource>();
         activeBullet = null;
         withdrawRope = false;
     }
@@ -78,6 +82,7 @@ public class Harpoon : MonoBehaviour
             }
             else
             {
+				audio.PlayOneShot (sndWithdraw);
                 withdrawRope = true;
             }
         }
@@ -90,6 +95,7 @@ public class Harpoon : MonoBehaviour
 
     public void detachPlunger()
     {
+		audio.Stop();
         activeBullet = null;
         lineRenderer.enabled = false;
     }
