@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 public class GameController : MonoBehaviour
 {
@@ -42,6 +44,8 @@ public class GameController : MonoBehaviour
     {
         animalsInTheWorld -= count;
         updateAnimalsQuantityText();
+
+        SceneManager.LoadScene("Game Over");
     }
 
     public int getAnimalsCount()
