@@ -45,9 +45,12 @@ public class Harpoon : MonoBehaviour
         if (activeBullet != null)
         {
             plungerMinimumAliveTimeBeforeDetaching -= Time.deltaTime;
-
-            lineRenderer.SetPosition(0, ropeJoint.transform.position);
-            lineRenderer.SetPosition(1, activeBullet.transform.position);
+            Vector3 point = ropeJoint.transform.position;
+            point.z = -5;
+            lineRenderer.SetPosition(0, point);
+            point = activeBullet.transform.position;
+            point.z = -5;
+            lineRenderer.SetPosition(1, point);
         }
 
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
