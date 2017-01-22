@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class SpawnedAnimal : MonoBehaviour
 {
+    const float DRIFT_AWAY_TIME = 4.0f;
+    const float DRIFT_AWAY_SPEED = 3.5f;
+
     public Wave wave;
 	public AudioClip[] sndSplashes;
 	private AudioSource audio;
@@ -11,6 +14,7 @@ public class SpawnedAnimal : MonoBehaviour
 
     Rigidbody2D body;
     float targetScale = 0;
+    float driftAwayTime;
     WaveFn fn;
     bool attachedToWave;
     Vector2 attachedOrigin;
@@ -19,9 +23,10 @@ public class SpawnedAnimal : MonoBehaviour
 
     void Start()
     {
-		animator = GetComponentInChildren<Animator>();
+        animator = GetComponentInChildren<Animator>();
 		audio = GetComponent<AudioSource>();
 
+        driftAwayTime = DRIFT_AWAY_TIME;
         connected = false;
         howMuchBelowWater = Random.Range(0, 1.5f);
         fn = new WaveFn();
@@ -55,6 +60,12 @@ public class SpawnedAnimal : MonoBehaviour
 
         if (attachedToWave)
         {
+            driftAwayTime -= Time.deltaTime;
+            if (driftAwayTime <= 0)
+            {
+                attachedOrigin.x -= DRIFT_AWAY_SPEED * Time.deltaTime;
+            }
+
             position.x = attachedOrigin.x;
             position.y = fn.f(wave.getCurrentX() + attachedOrigin.x) - attachedOrigin.y;
         }
