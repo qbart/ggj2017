@@ -98,6 +98,7 @@ public class Harpoon : MonoBehaviour
                 ropeJoint.autoConfigureConnectedAnchor = false;
                 ropeJoint.distance = 6;
                 ropeJoint.connectedAnchor = new Vector2(1, 0);
+                ropeJoint.anchor = new Vector2(1, 0);
                 body.AddForce(direction * 150, ForceMode2D.Impulse);
                 activeBullet = bullet;
                 lineRenderer.enabled = true;
