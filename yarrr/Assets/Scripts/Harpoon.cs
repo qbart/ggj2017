@@ -5,15 +5,16 @@ using UnityEngine;
 public class Harpoon : MonoBehaviour
 {
     const float MIN_PLUNGER_ALIVE_TIME = 1.0f;
-
-
+    
     public LayerMask animalLayer;
     public Pirate pirate;
     public Transform plungerSpawnPoint;
     public GameObject plunger;
     public SpringJoint2D ropeJoint;
-	AudioSource audio;
+    public GameObject chainRoot;
+    public GameObject chainPrefab;
 
+    AudioSource audio;
 	public AudioClip sndWithdraw;
 
     float plungerMinimumAliveTimeBeforeDetaching;
@@ -64,7 +65,13 @@ public class Harpoon : MonoBehaviour
 
         float angle = Mathf.Atan2(position.y, position.x) * Mathf.Rad2Deg;
         angle = Mathf.Clamp(angle, -45, 45);
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        bool updateCannonPosition = Vector2.Distance(mousePosition, objectPos) >= 0.6f;
+        updateCannonPosition &= mousePosition.x < objectPos.x;
+
+        if (updateCannonPosition)
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        }
 
         if (framePirateReel < 12 && playReelAnim)
         {
@@ -75,10 +82,13 @@ public class Harpoon : MonoBehaviour
         {
             playReelAnim = false;
 
-            if (angle <= 0)
-                pirate.setFrame(pirate.spriteDown[clampi((int)Mathf.Abs(angle / 7.5f), 0, 5)]);
-            else
-                pirate.setFrame(pirate.spriteUp[clampi((int)(angle / 7.5f), 0, 5)]);
+            if (updateCannonPosition)
+            {
+                if (angle <= 0)
+                    pirate.setFrame(pirate.spriteDown[clampi((int)Mathf.Abs(angle / 7.5f), 0, 5)]);
+                else
+                    pirate.setFrame(pirate.spriteUp[clampi((int)(angle / 7.5f), 0, 5)]);
+            }
         }
 
         if (Input.GetMouseButtonDown(0))
@@ -103,6 +113,20 @@ public class Harpoon : MonoBehaviour
                 activeBullet = bullet;
                 lineRenderer.enabled = true;
                 framePirateReel = 0;
+
+                // generate chain
+                //GameObject parent = chainRoot;
+                //for (int i = 0; i < 6; i++)
+                //{
+                //    GameObject chain = Instantiate(chainPrefab, new Vector3(-0.218f, 0, 0), Quaternion.Euler(0, 0, -90), parent.transform) as GameObject;
+                //    HingeJoint2D hinge = chain.GetComponent<HingeJoint2D>();
+                //    hinge.autoConfigureConnectedAnchor = false;
+                //    hinge.anchor = new Vector2(0, 0.11f);
+                //    hinge.connectedAnchor = new Vector2(0, -0.11f);
+                //    hinge.useLimits = false;
+                //    hinge.connectedBody = parent.GetComponent<Rigidbody2D>();
+                //    parent = chain;
+                //}
             }
             else
             {
